@@ -1,0 +1,150 @@
+{% load static %}
+{% load humanize %}
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Produit Listes
+  </title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    html, body {
+  height: 100%;
+  overflow: auto;
+}
+ .active-icon {
+    color: orange !important;
+}
+ </style>
+ </head>
+ <body class="bg-gray-100">
+  <div class="w-full rounded-lg overflow-hidden">
+    <!-- Header (Spanning Full Width) -->
+    <div class="w-full flex items-center justify-between p-4  bg-orange-300">
+      <!-- Back Button -->
+      <button onclick="window.history.back()" class="text-gray-600 hover:text-gray-900">
+          <i class="fas fa-arrow-left text-2xl"></i>
+      </button>
+  
+      <!-- Logo & Title -->
+      <div class="flex items-center">
+        <img alt="Logo" class="h-16 w-16 object-contain" 
+             src="{% static 'images/logo.jpg'%}"/>
+    </div>
+  </div>
+  
+ 
+    <!-- Search Bar (Full Width) -->
+    <div class="w-full p-4">
+    <form id="category-search-form" class="w-full flex items-center border rounded-lg p-2">
+        <input class="flex-grow outline-none w-full" type="text" name="q" value="{{ query }}" placeholder="Search products..."/>
+        <button type="submit" class="fas fa-search text-xl ml-2"></button>
+    </form>
+</div>
+    
+ </div>
+ 
+ <div class="p-4 bg-gray-100">
+
+
+
+
+  <div class="p-4 bg-gray-100">
+    {% if products %}
+      {% for product in products %}
+        <div class="border-b py-4 flex items-center">
+          <a href="{% url 'details' product.id %}">
+            <img
+              src="{{ product.photos.all.0.image.url }}"
+              alt="{{ product.name }}"
+              class="h-20 w-20 rounded-lg"
+            />
+          </a>
+          <div class="ml-4 flex-grow">
+            <div class="text-lg font-semibold text-orange-600">fcfa {{ product.price|intcomma }}</div>
+            <div class="text-sm text-gray-600">{{ product.description }}</div>
+            <div class="text-xs text-gray-500">{{ product.get_address }}</div>
+          </div>
+          <a href="{% url 'toggle_like' product.id %}">
+            <i class="far fa-heart text-xl {% if request.user in product.liked_by.all %}text-red-500{% else %}text-gray-300{% endif %}"></i>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No products found for your search query.</p>
+    {% endif %}
+  </div>
+  
+  </div>
+  
+  </div>
+  <footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+    <div class="flex flex-col items-center">
+     <a href="{% url 'home' %}">
+         <i class="fas fa-home text-gray-600 active-icon"></i>
+         <span class="text-xs text-gray-600">Home</span>
+     </a>
+    
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'chat:user_chats' %}">
+         <i class="fas fa-comments text-gray-600"></i>
+         <span class="text-xs text-gray-600">Messages</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'add_product' %}">
+             <div class="bg-orange-500 text-white rounded-full p-2">
+                 <i class="fas fa-plus"></i>
+             </div>
+             <span class="text-xs text-gray-600">Vendre</span>
+         </a>
+     </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'myadds' %}">
+             <i class="fas fa-list text-gray-600"></i>
+             <span class="text-xs text-gray-600">Mes Favoris</span>
+         </a>    
+    </div>
+    <div class="flex flex-col items-center">
+     <a href="{% url 'account' %}">
+         <i class="fas fa-user text-gray-600"></i>
+         <span class="text-xs text-gray-600">Moi</span>
+     </a>
+    </div>
+   </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchForm = document.getElementById('category-search-form');
+    const searchInput = searchForm.querySelector('input[name="q"]');
+
+    searchForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default page change
+
+        let url = new URL(window.location.href);
+        url.searchParams.set('q', searchInput.value); // Add search query
+
+        // Get location from sessionStorage
+        const lat = sessionStorage.getItem('latitude');
+        const lon = sessionStorage.getItem('longitude');
+
+        if (lat && lon) {
+            url.searchParams.set('latitude', lat);
+            url.searchParams.set('longitude', lon);
+        }
+
+        // Reload with updated search filters
+        window.location.href = url.toString();
+    });
+});
+</script>
+
+
+ </body>
+ 
+</html>

@@ -1,0 +1,32 @@
+<footer class="bg-white shadow-md fixed bottom-0 w-full py-3 px-6 flex justify-around text-gray-700 text-sm">
+    <div class="flex flex-col items-center">
+        <i class="fas fa-home text-xl"></i>
+        <span>Home</span>
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'chat:user_chats' %}">
+            <i class="fas fa-comments text-xl"></i>
+            <span>Messages</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'login' %}">
+            <div class="bg-green-500 text-white rounded-full p-3">
+                <i class="fas fa-plus text-lg"></i>
+            </div>
+            <span>Sell</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'myadds' %}">
+            <i class="fas fa-list text-xl"></i>
+            <span>Favorites</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'account' %}">
+            <i class="fas fa-user text-xl"></i>
+            <span>Account</span>
+        </a>
+    </div>
+</footer>

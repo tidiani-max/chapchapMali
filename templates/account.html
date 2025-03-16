@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil utilisateur</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/static/css/output.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <style>
+            html, body {
+  height: 100%;
+  overflow: auto;
+}
+ .active-icon {
+    color: orange !important;
+}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-orange-300 font-roboto">
+
+<div class="max-w-3xl mx-auto p-4">
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <!-- Back Button -->
+        <button onclick="window.history.back()" class="text-gray-600 hover:text-gray-900 flex items-center">
+            <i class="fas fa-arrow-left text-2xl"></i>
+        </button>
+
+        <!-- Profile Section -->
+        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-4 text-center sm:text-left">
+            <!-- User Image -->
+            {% if profile and profile.profile_picture %}
+                <img alt="Profile image of the user" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-gray-300"
+                     src="{{ profile.profile_picture.url }}" />
+            {% else %}
+                <img alt="Default profile image" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-gray-300"
+                     src="https://via.placeholder.com/100" />
+            {% endif %}
+
+            <!-- User Details -->
+            <div>
+                <h2 class="text-xl sm:text-2xl font-bold">{{ user.username }}</h2>
+                <p class="text-gray-600">{{ user.email }}</p>
+            </div>
+
+            <!-- Edit Profile & Add Photo -->
+            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto justify-center sm:justify-start">
+                <a href="{% url 'edit_profile' %}" class="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600 flex items-center w-full sm:w-auto">
+                    <i class="fas fa-user-edit mr-2"></i> Modifier le profil
+                </a>
+                <a href="{% url 'add_profile_photo' %}" class="bg-green-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-600 flex items-center w-full sm:w-auto">
+                    <i class="fas fa-camera mr-2"></i> Ajouter une photo
+                </a>
+                <form method="POST" action="{% url 'logout' %}" class="w-full sm:w-auto">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-600 flex items-center w-full sm:w-auto">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- research -->
+      <!-- Search Bar -->
+<div class="mt-6">
+    <form method="GET" action="{% url 'account' %}" class="flex items-center bg-white shadow rounded-lg p-2">
+        <input type="text" name="q" placeholder="Search products..." 
+               value="{{ query }}" class="flex-1 px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+        <!-- Products Section -->
+        <div class="mt-6">
+            <h3 class="text-xl font-semibold mb-4">Vos produits</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {% for product in products %}
+                <div class="bg-gray-50 p-4 rounded-lg shadow">
+                    <!-- Product Image -->
+                    <img alt="Image of {{ product.name }}" class="w-full h-32 sm:h-40 object-cover rounded-lg" 
+                         src="{{ product.photos.first.image.url }}" />
+
+                    <!-- Product Details -->
+                    <h4 class="mt-2 text-lg font-semibold">{{ product.name }}</h4>
+
+                    <!-- Edit & Delete Buttons -->
+                    <div class="flex justify-between mt-3">
+                        <a href="{% url 'edit_product' product.id %}" 
+                           class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 flex items-center">
+                            <i class="fas fa-edit mr-2"></i> Modifier
+                        </a>
+                        <a href="{% url 'delete_product' product.id %}" 
+                           class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 flex items-center"
+                           >
+                            <i class="fas fa-trash mr-2"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Delete Account -->
+        <form method="POST" action="{% url 'delete_account' %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg w-full hover:bg-red-700">
+                Supprimer le compte
+            </button>
+        </form>
+        
+    </div>
+</div>
+
+
+</body>
+<footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+    <div class="flex flex-col items-center">
+     <a href="{% url 'home' %}">
+        <i class="fas fa-home text-gray-600 active-icon"></i>
+        <span class="text-xs text-gray-600">Home</span>
+     </a>
+    
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'chat:user_chats' %}">
+         <i class="fas fa-comments text-gray-600"></i>
+         <span class="text-xs text-gray-600">Messages</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'add_product' %}">
+             <div class="bg-orange-500 text-white rounded-full p-2">
+                 <i class="fas fa-plus"></i>
+             </div>
+             <span class="text-xs text-gray-600">Vendre</span>
+         </a>
+     </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'myadds' %}">
+             <i class="fas fa-list text-gray-600"></i>
+             <span class="text-xs text-gray-600">Mes Favoris</span>
+         </a>    
+    </div>
+    <div class="flex flex-col items-center">
+         
+         {% if request.user.email == "chapchapmali@gmail.com" %}
+             <a href="{% url 'dashboard' %}">
+                 <i class="fas fa-user text-gray-600"></i>
+                 <span class="text-xs text-gray-600">Dashboard</span>
+             </a>
+         {% else %}
+             <a href="{% url 'account' %}">
+                 <i class="fas fa-user text-gray-600"></i>
+                 <span class="text-xs text-gray-600">Moi</span>
+             </a>
+         {% endif %}
+ </div>
+ 
+   </footer>
+
+</html>

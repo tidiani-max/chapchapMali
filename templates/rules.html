@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règles et Règlements</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+        <h1 class="text-3xl font-bold text-orange-600 mb-4 text-center">Règles et Règlements pour Utilisateurs</h1>
+        
+        <h2 class="text-xl font-semibold mt-4">1. Règles Générales</h2>
+        <ul class="list-disc ml-6">
+            <li>N’utilisez pas le site à des fins illégales ou frauduleuses.</li>
+            <li>Respectez les droits des autres utilisateurs (y compris la vie privée et la propriété intellectuelle).</li>
+            <li>Les utilisateurs doivent fournir des informations exactes et vérifiées lors de la création d’un compte.</li>
+            <li>Les utilisateurs sont responsables de la sécurité de leurs comptes (ne partagez pas votre mot de passe).</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">2. Règles pour les Acheteurs</h2>
+        <ul class="list-disc ml-6">
+            <li>Ne faites jamais de paiement avant de rencontrer le vendeur et de vérifier le produit.</li>
+            <li>Vérifiez attentivement les descriptions des produits avant d’acheter.</li>
+            <li>Si un produit est livré, assurez-vous de vérifier son état avant de finaliser la transaction.</li>
+            <li>En cas de doute ou de problème, contactez immédiatement notre support client.</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">3. Règles pour les Vendeurs</h2>
+        <ul class="list-disc ml-6">
+            <li>Ne vendez pas de produits volés, illégaux, contrefaits ou expirés.</li>
+            <li>Décrivez vos produits avec précision, y compris leur état (neuf ou d’occasion).</li>
+            <li>Indiquez clairement le prix final et les frais supplémentaires éventuels (par exemple : frais de livraison).</li>
+            <li>Livrez les produits dans les délais convenus avec l’acheteur.</li>
+            <li>Assurez-vous que vos produits respectent les lois et réglementations en vigueur au Mali.</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">4. Produits Interdits</h2>
+        <ul class="list-disc ml-6">
+            <li>Produits volés ou contrefaits.</li>
+            <li>Produits illégaux tels que drogues, armes, ou animaux protégés.</li>
+            <li>Produits alimentaires ou cosmétiques périmés ou non conformes aux normes sanitaires.</li>
+            <li>Contenu numérique piraté ou non autorisé (par exemple : logiciels illégaux).</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">5. Politique de Confidentialité</h2>
+        <ul class="list-disc ml-6">
+            <li>Nous respectons vos données personnelles et ne les partageons pas sans votre consentement.</li>
+            <li>Les utilisateurs doivent respecter les informations personnelles des autres (pas de spam ou de harcèlement).</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">6. Politique de Responsabilité</h2>
+        <ul class="list-disc ml-6">
+            <li>La plateforme agit comme un intermédiaire entre acheteurs et vendeurs et n’est pas responsable des transactions directes.</li>
+            <li>En cas de litige entre utilisateurs, nous fournirons une assistance, mais nous ne garantissons pas la résolution.</li>
+            <li>Les utilisateurs sont responsables de leurs propres actions et des conséquences qui en découlent.</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">7. Politique de Paiement</h2>
+        <ul class="list-disc ml-6">
+            <li>Les paiements doivent être effectués selon les modalités convenues entre acheteur et vendeur.</li>
+            <li>Nous ne sommes pas responsables des pertes dues à des paiements non sécurisés ou frauduleux.</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">8. Résolution des Litiges</h2>
+        <p class="ml-6">En cas de litige, les utilisateurs sont encouragés à résoudre le problème à l’amiable.</p>
+
+        <h2 class="text-xl font-semibold mt-4">9. Résiliation de Compte</h2>
+        <ul class="list-disc ml-6">
+            <li>Nous nous réservons le droit de suspendre ou de résilier les comptes qui enfreignent nos règles.</li>
+            <li>Les utilisateurs suspendus ne pourront plus accéder à nos services.</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-4">10. Acceptation des Conditions</h2>
+        <ul class="list-disc ml-6">
+            <li>En utilisant ce site, vous acceptez nos conditions générales et vous vous engagez à les respecter.</li>
+            <li>Les modifications aux règles et règlements seront communiquées aux utilisateurs.</li>
+        </ul>
+
+        <div class="mt-6 text-center">
+            <a href="{% url 'signup' %}" class="text-orange-600 underline">Retour à l'inscription</a>
+        </div>
+    </div>
+</body>
+</html>

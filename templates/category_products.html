@@ -1,0 +1,150 @@
+{% load static %}
+{% load humanize %}
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+    Listes de produits
+  </title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="/static/css/output.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+  <style>
+    html, body {
+  height: 100%;
+  overflow: auto;
+}
+ .active-icon {
+    color: orange !important;
+}
+ </style>
+ </head>
+ <body class="bg-gray-100 pb-16">
+  <!-- Header -->
+
+  <header class="shadow-md bg-orange-300 p-4 flex items-center justify-between rounded-lg max-w-screen-lg mx-auto">
+    <!-- Back Button -->
+    <button onclick="window.history.back()" class="text-gray-700 hover:text-gray-900 transition duration-200">
+        <i class="fas fa-arrow-left text-2xl"></i>
+    </button>
+
+    <!-- Logo -->
+    <div class="flex items-center">
+        <img alt="Logo" class="h-14 w-14 object-contain" src="{% static 'images/logo.jpg' %}"/>
+    </div> 
+</header>
+
+<!-- Search Bar -->
+<div class="w-full p-4">
+    <form method="get" class="w-full flex items-center border rounded-lg p-2">
+        <input class="flex-grow outline-none w-full" type="text" name="q" value="{{ query }}" placeholder="recherche produits..."/>
+        <button type="submit" class="fas fa-search text-xl ml-2"></button>
+    </form>
+</div>
+
+
+
+    
+
+    <body class="bg-gray-100 font-roboto">
+        <div class="container mx-auto p-4">
+            <h1 class="text-3xl font-bold text-center mb-6">{{ category.name }}</h1>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
+                {% for product in products %}
+                <div class="bg-white p-2 rounded-lg shadow">
+                    <div class="relative">
+                        {% if product.photos.all|length > 0 %}
+                        <a href="{% url 'details' product.id %}">
+                            <img src="{{ product.photos.all.0.image.url }}" alt="{{ product.name }} Photo" class="w-full h-auto max-h-40 object-contain rounded-lg">
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'toggle_like' product.id %}">
+                            <i class="fas fa-heart absolute top-2 right-2 {% if request.user in product.liked_by.all %}text-red-500{% else %}text-gray-300{% endif %}"></i>
+                        </a>
+                    </div>
+                    <div class="mt-2">
+                        <h3 class="text-sm font-semibold text-orange-600">fcfa  {{ product.price|intcomma }}</h3>
+                        <p class="text-xs text-gray-600">{{ product.name }}</p>
+                        <p class="text-xs text-gray-600"><i class="fas fa-map-marker-alt"></i>{{ product.get_address }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+               </div>
+            </div>
+        </div>
+   
+
+
+
+
+    <footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+        <div class="flex flex-col items-center">
+         <a href="{% url 'home' %}">
+             <i class="fas fa-home text-gray-600 active-icon"></i>
+             <span class="text-xs text-gray-600">Home</span>
+         </a>
+        
+        </div>
+        <div class="flex flex-col items-center">
+            <a href="{% url 'chat:user_chats' %}">
+             <i class="fas fa-comments text-gray-600"></i>
+             <span class="text-xs text-gray-600">Messages</span>
+            </a>
+        </div>
+        <div class="flex flex-col items-center">
+             <a href="{% url 'add_product' %}">
+                 <div class="bg-orange-500 text-white rounded-full p-2">
+                     <i class="fas fa-plus"></i>
+                 </div>
+                 <span class="text-xs text-gray-600">Vendre</span>
+             </a>
+         </div>
+        <div class="flex flex-col items-center">
+             <a href="{% url 'myadds' %}">
+                 <i class="fas fa-list text-gray-600"></i>
+                 <span class="text-xs text-gray-600">Mes Favoris</span>
+             </a>    
+        </div>
+        <div class="flex flex-col items-center">
+         <a href="{% url 'account' %}">
+             <i class="fas fa-user text-gray-600"></i>
+             <span class="text-xs text-gray-600">Moi</span>
+         </a>
+        </div>
+       </footer>
+     
+     <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Check if location is already stored
+    if (!sessionStorage.getItem('latitude') || !sessionStorage.getItem('longitude')) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            sessionStorage.setItem('latitude', position.coords.latitude);
+            sessionStorage.setItem('longitude', position.coords.longitude);
+            applyLocationFilter(); // Apply the location filter immediately
+        }, function (error) {
+            console.warn("Location access denied or unavailable.");
+        });
+    } else {
+        applyLocationFilter(); // Apply filter if location already exists
+    }
+
+    function applyLocationFilter() {
+        let url = new URL(window.location.href);
+        const lat = sessionStorage.getItem('latitude');
+        const lon = sessionStorage.getItem('longitude');
+
+        if (lat && lon && !url.searchParams.has('latitude')) {
+            url.searchParams.set('latitude', lat);
+            url.searchParams.set('longitude', lon);
+            window.history.replaceState({}, '', url.toString()); // Update URL without reloading
+        }
+    }
+});
+</script>
+
+</body>
+</html>

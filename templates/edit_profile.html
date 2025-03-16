@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modifier Profile</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        html, body {
+       height: 100%;
+       overflow: auto;
+     }
+      .active-icon {
+         color: orange !important;
+     }
+   </style>
+</head>
+<body class="bg-gray-100 font-roboto">
+
+<div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+     <!-- Back Button -->
+     <button onclick="window.history.back()" class="text-gray-600 hover:text-gray-900 flex items-center">
+        <i class="fas fa-arrow-left text-2xl"></i>
+    </button>
+    <h2 class="text-2xl font-bold text-center mb-4">Modifier Votre Profile</h2>
+    {% if messages %}
+    <div class="mb-4 text-red-500">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <!-- Profile Picture Preview -->
+    <div class="flex justify-center mb-4">
+        {% if profile.profile_picture %}
+            <img id="profilePreview" src="{{ profile.profile_picture.url }}" 
+                 class="w-24 h-24 rounded-full object-cover" alt="Profile Picture">
+        {% else %}
+            <img id="profilePreview" src="https://via.placeholder.com/100" 
+                 class="w-24 h-24 rounded-full object-cover" alt="Default Profile">
+        {% endif %}
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label class="block text-gray-700">Nom d'utilisateur</label>
+        <input type="text" name="username" value="{{ user.username }}" 
+               class="w-full p-2 border rounded-lg mb-3">
+
+        <label class="block text-gray-700">Email</label>
+        <input type="email" name="email" value="{{ user.email }}" 
+               class="w-full p-2 border rounded-lg mb-3">
+
+        <label class="block text-gray-700">Photo de Profile </label>
+        <input type="file" name="profile_picture" accept="image/*" 
+               class="w-full p-2 border rounded-lg mb-3" onchange="previewProfile(event)">
+
+        <button type="submit" class="bg-blue-500 text-white w-full py-2 rounded-lg mt-4 hover:bg-blue-600">
+            Enregistrer
+        </button>
+    </form>
+
+    <a href="{% url 'account' %}" class="block text-center text-gray-500 mt-4 hover:underline">
+        Annuler
+    </a>
+</div>
+<footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+    <div class="flex flex-col items-center">
+     <a href="{% url 'home' %}">
+         <i class="fas fa-home text-gray-600 active-icon"></i>
+         <span class="text-xs text-gray-600">Home</span>
+     </a>
+    
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'chat:user_chats' %}">
+         <i class="fas fa-comments text-gray-600"></i>
+         <span class="text-xs text-gray-600">Messages</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'add_product' %}">
+             <div class="bg-orange-500 text-white rounded-full p-2">
+                 <i class="fas fa-plus"></i>
+             </div>
+             <span class="text-xs text-gray-600">Vendre</span>
+         </a>
+     </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'myadds' %}">
+             <i class="fas fa-list text-gray-600"></i>
+             <span class="text-xs text-gray-600">Mes Favoris</span>
+         </a>    
+    </div>
+    <div class="flex flex-col items-center">
+     <a href="{% url 'account' %}">
+         <i class="fas fa-user text-gray-600"></i>
+         <span class="text-xs text-gray-600">Moi</span>
+     </a>
+    </div>
+   </footer>
+
+<script>
+    function previewProfile(event) {
+        const output = document.getElementById('profilePreview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>
+
+</body>
+</html>

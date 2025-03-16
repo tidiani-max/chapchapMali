@@ -1,0 +1,177 @@
+{% load static %}
+{% load humanize %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Message Interface</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/static/css/output.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+</head>
+<body class="bg-gray-100">
+   
+       
+    
+    <div class="max-w-lg mx-auto bg-white shadow-lg rounded-lg h-screen flex flex-col">    
+        <!-- Product Header -->
+        <div class="bg-gray-100 p-4 flex items-center justify-between border-b">
+             <!-- Back Button -->
+        <button onclick="window.history.back()" class="text-gray-600 hover:text-gray-900">
+            <i class="fas fa-arrow-left text-2xl"></i>
+        </button>
+            <div class="flex items-center">
+
+                <img alt="Product Image" class="w-12 h-12 rounded-lg" src="{{ product.photos.all.0.image.url }}" />
+                <div class="ml-3">
+                    <h2 class="text-lg font-semibold">{{ product.name }}</h2>
+                    <p class="text-sm text-gray-600">{{ product.description }}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-lg font-semibold text-gray-900">fcfa  {{ product.price|intcomma }}</p>
+            </div>
+        </div>
+    
+        <!-- Chat Messages (Scrollable) -->
+        <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-gray-50" id="messages">
+            {% for message in messages %}
+            <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+                <div class="ml-2 {% if message.sender == request.user %}bg-blue-500 text-white{% else %}bg-gray-300{% endif %} p-3 rounded-lg max-w-xs">
+                    <p>{{ message.content }}</p>
+                    <div class="text-xs opacity-70 mt-1">
+                        {{ message.timestamp|date:"H:i" }} - {{ message.timestamp|date:"d M Y" }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    
+        <!-- Fixed Message Input at Bottom -->
+        <div class="p-4 border-t bg-white sticky bottom-0 flex">
+            <input class="flex-1 p-2 border rounded-lg outline-none" data-user-id="{{ request.user.id }}" 
+                   id="chat-message-input" placeholder="Type here..." type="text"/>
+            <button class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600" id="chat-message-submit">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    
+    </div>
+    
+
+
+    <script>
+        // Initialize Pusher
+        Pusher.logToConsole = true;
+    // Initialize Pusher
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('bfc6a201f3bcbdc43489', {
+      cluster: 'mt1'
+    });
+
+    var channel = pusher.subscribe('chat_{{ chat_room.id }}'); 
+     // Use the correct chat room ID
+    channel.bind('new_message', function(data) {
+        const messages = document.getElementById('messages');
+        const messageElement = document.createElement('div');
+
+        const isCurrentUser = data.sender_id === parseInt("{{ request.user.id }}");
+        messageElement.className = `flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`;
+
+        // ✅ Convert UTC timestamp to local time
+        let timestampLocal = convertToUserLocalTime(data.timestamp);
+
+        messageElement.innerHTML = `
+            <div class="ml-3 ${isCurrentUser ? 'bg-blue-200' : 'bg-gray-200'} p-3 rounded-lg">
+                <p>${data.message || 'Message not available'}</p>
+                <div class="text-xs text-gray-500 mt-1">
+                    <span>${timestampLocal}</span>
+                </div>
+            </div>
+        `;
+
+        messages.appendChild(messageElement);
+        messages.scrollTop = messages.scrollHeight; // Scroll to bottom
+    });
+
+// ✅ Function to convert UTC timestamp to local time
+function convertToUserLocalTime(utcTimestamp) {
+    if (!utcTimestamp) return "Unknown time"; 
+
+    let utcDate = new Date(utcTimestamp); // Parse UTC string into a Date object
+    return utcDate.toLocaleString(); // Convert it to the user's local timezone
+}
+
+
+    // ✅ Define the missing sendMessage() function
+    function sendMessage() {
+    const input = document.getElementById('chat-message-input');
+    const message = input.value.trim();
+    const userId = parseInt(input.dataset.userId); // Sender's ID
+    const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    if (!message) return; // Prevent sending empty messages
+
+    // Send the message to the server via the API
+    fetch('/chat/send_message/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            message: message,
+            chat_room_id: '{{ chat_room.id|escapejs }}',
+            sender_id: userId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            input.value = '';  // Clear the input field
+
+            // No need to append message manually, Pusher will handle it
+        } else {
+            alert("Error: " + (data.message || "Unknown error"));
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
+}
+    // ✅ Automatically scroll to the bottom when the page loads
+    function scrollToBottom() {
+        const messages = document.getElementById('messages');
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    // Click event for sending messages
+    document.getElementById('chat-message-submit').addEventListener('click', sendMessage);
+
+    // Press Enter to send message
+    document.getElementById('chat-message-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // ✅ Scroll down on page load
+    document.addEventListener("DOMContentLoaded", scrollToBottom);
+
+    
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.cookie = "user_timezone=" + userTimeZone + "; path=/";
+    });
+</script>
+
+
+</body>
+</html>

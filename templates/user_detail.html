@@ -1,0 +1,64 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }}'s Details</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-4">{{ user.username }}'s Profile</h1>
+
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full">
+        {% endif %}
+        
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+        <form method="GET" class="flex items-center space-x-2 mb-4">
+            <input type="text" name="q" placeholder="Search..." value="{{ query }}" 
+                class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                🔍 Search
+            </button>
+        </form>
+        
+
+        <h2 class="text-2xl font-bold mt-6">Products</h2>
+        {% for product in products %}
+            <div class="p-4 border rounded-lg my-2">
+                <h3 class="text-lg font-semibold">{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <p><strong>Price:</strong> ${{ product.price }}</p>
+            </div>
+        {% empty %}
+            <p>No products available.</p>
+        {% endfor %}
+
+        <h2 class="text-2xl font-bold mt-6">User Activities</h2>
+        {% for activity in activities %}
+            <div class="p-4 border rounded-lg my-2">
+                <p>{{ activity.description }}</p>
+                <p><strong>Time:</strong> {{ activity.timestamp }}</p>
+            </div>
+        {% empty %}
+            <p>No activities found.</p>
+        {% endfor %}
+
+        <h2 class="text-2xl font-bold mt-6">Chat History</h2>
+        {% for message in chat_messages %}
+            <div class="p-4 border rounded-lg my-2">
+                <p><strong>{{ message.sender.username }}</strong> → <strong>{{ message.receiver.username }}</strong></p>
+                <p>{{ message.content }}</p>
+                <p class="text-gray-500 text-sm">{{ message.timestamp }}</p>
+            </div>
+        {% empty %}
+            <p>No chat messages available.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

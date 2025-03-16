@@ -1,0 +1,116 @@
+{% load static %}
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Product Listings
+  </title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    html, body {
+  height: 100%;
+  overflow: auto;
+}
+ .active-icon {
+    color: orange !important;
+}
+ </style>
+ </head>
+ <body class="bg-gray-100">
+    
+  <div class="w-full bg-orange-300 shadow-md rounded-lg overflow-hidden">
+    <!-- Header (Spanning Full Width) -->
+   <div class="w-full flex items-center justify-between p-4 border-b">
+    <!-- Back Button -->
+    <button onclick="window.history.back()" class="text-gray-600 hover:text-gray-900">
+        <i class="fas fa-arrow-left text-2xl"></i>
+    </button>
+
+    <!-- Logo & Title -->
+    <div class="flex items-center">
+        <img alt="Logo" class="h-16 w-16 object-contain" 
+             src="{% static 'images/logo.jpg'%}"/>
+    </div>
+</div>
+
+ 
+    <!-- Search Bar (Full Width) -->
+  </div>
+  <ul class="p-4 md:p-6 space-y-4 w-full">
+    {% for chat in chat_rooms %}
+    <li class="p-4 bg-gray-50 rounded-lg flex items-center justify-between shadow-md hover:bg-gray-100 transition-all w-full">
+        <div>
+            <img alt="Product Image" class="w-10 h-10 rounded-full" height="40" src="{{ chat.product.photos.all.0.image.url }}" width="40"/>
+            <p class="text-sm md:text-lg font-semibold ">{{ chat.product.name }}</p>
+            <p class="text-xs md:text-sm text-gray-600">
+                Messages avec 
+                {% for user in chat.users.all %}
+                    {% if user != request.user %}
+                        {{ user.username }}
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+        <div class="flex items-center space-x-2 md:space-x-4">
+            {% if chat.new_message_count > 0 %}
+                <span class="bg-green-500 text-white text-xs md:text-sm font-semibold px-2 py-1 rounded-full">
+                    {{ chat.new_message_count }}
+                </span>
+            {% endif %}
+            <a href="{% url 'chat:chat_room_detail' chat.id %}" class="px-3 py-1 md:px-4 md:py-2 bg-blue-500 text-white rounded-lg shadow-md text-xs md:text-sm hover:bg-blue-600 transition-all">
+                Ouvrir
+            </a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+<footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+    <div class="flex flex-col items-center">
+     <a href="{% url 'home' %}">
+         <i class="fas fa-home text-gray-600 active-icon"></i>
+         <span class="text-xs text-gray-600">Home</span>
+     </a>
+    
+    </div>
+    <div class="flex flex-col items-center">
+        <a href="{% url 'chat:user_chats' %}">
+         <i class="fas fa-comments text-gray-600"></i>
+         <span class="text-xs text-gray-600">Messages</span>
+        </a>
+    </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'add_product' %}">
+             <div class="bg-orange-500 text-white rounded-full p-2">
+                 <i class="fas fa-plus"></i>
+             </div>
+             <span class="text-xs text-gray-600">Vendre</span>
+         </a>
+     </div>
+    <div class="flex flex-col items-center">
+         <a href="{% url 'myadds' %}">
+             <i class="fas fa-list text-gray-600"></i>
+             <span class="text-xs text-gray-600">Mes Favoris</span>
+         </a>    
+    </div>
+    <div class="flex flex-col items-center">
+     <a href="{% url 'account' %}">
+         <i class="fas fa-user text-gray-600"></i>
+         <span class="text-xs text-gray-600">Moi</span>
+     </a>
+    </div>
+   </footer>
+ </body>
+ 
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,169 @@
+{% load static %}
+{% load humanize %}
+{% load compress %}
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Chap Chap
+  </title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.jpg' %}">
+  </script>
+  {% compress css %}
+  <link href="{% static 'css/output.css' %}" rel="stylesheet">
+{% endcompress %}
+  
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <style>
+    html, body {
+  height: 100%;
+  overflow: auto;
+}
+ .active-icon {
+    color: orange !important;
+}
+ </style>
+ <body class="bg-gray-100 pb-16">
+  <!-- Header -->
+  <header class="bg-orange-300 shadow p-4 flex items-center justify-between">
+    <div class="flex items-center">
+        <img alt="ChapChap Logo" class="h-16 w-16 object-contain" src="{% static 'images/logo.jpg' %}"/>
+    </div>
+    <div class="flex-1 mx-4">
+        <a href="{% url 'research' %}">
+            <input class="border rounded-full px-4 py-2 w-full max-w-2xl" 
+                   placeholder="Trouver Voitures, Phones..." type="text"/>
+        </a>
+    </div>
+ 
+  </header>
+
+  <!-- Browse Categories -->
+  <section class="bg-white p-4 mt-2">
+    <div class="w-full overflow-x-auto">
+        <div class="flex md:grid md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 md:gap-6">
+            {% for category in categories %}
+            <a href="{% url 'category_products' category.id %}" class="flex flex-col items-center min-w-[80px] md:w-auto">
+                <img alt="{{ category.name }} Icon" class="h-10 w-10" src="{{ category.image }}" />
+                <span class="mt-2 text-sm">{{ category.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+  </section>
+
+  <!-- Fresh Recommendations -->
+  <section class="p-4">
+    {% if messages %}
+    <div class="mb-4 text-red-500">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
+    {% for product in products %}
+    <div class="bg-white p-2 rounded-lg shadow">
+        <div class="relative">
+            {% if product.photos.all|length > 0 %}
+            <a href="{% url 'details' product.id %}">
+                <img src="{{ product.photos.all.0.image.url }}" loading="lazy" alt="{{ product.name }} Photo" class="w-full h-auto max-h-40 object-contain rounded-lg">
+            </a>
+            {% endif %}
+            <a href="{% url 'toggle_like' product.id %}">
+                <i class="fas fa-heart absolute top-2 right-2 {% if request.user in product.liked_by.all %}text-red-500{% else %}text-gray-300{% endif %}"></i>
+            </a>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-sm font-semibold text-orange-600">fcfa {{ product.price|intcomma }}</h3>
+            <p class="text-xs text-gray-600">{{ product.name }}</p>
+            <p class="text-xs text-gray-500">
+                {{ product.description|truncatechars:50 }}  <!-- Truncate if too long -->
+            </p>
+            <p class="text-xs text-orange-600"><i class="fas fa-map-marker-alt"></i> {{ product.get_address }}</p>
+        </div>
+    </div>
+    {% endfor %}
+   </div>
+  </section>
+  
+  <!-- Footer Navigation -->
+  <footer class="bg-white shadow p-2 fixed bottom-0 w-full flex justify-around">
+   <div class="flex flex-col items-center">
+    <a href="{% url 'home' %}">
+        <i class="fas fa-home text-gray-600 active-icon"></i>
+    <span class="text-xs text-gray-600">Home</span>
+    </a>
+    
+   </div>
+   <div class="flex flex-col items-center">
+       <a href="{% url 'chat:user_chats' %}">
+        <i class="fas fa-comments text-gray-600"></i>
+        <span class="text-xs text-gray-600">Messages</span>
+       </a>
+   </div>
+   <div class="flex flex-col items-center">
+        <a href="{% url 'add_product' %}">
+            <div class="bg-orange-500 text-white rounded-full p-2">
+                <i class="fas fa-plus"></i>
+            </div>
+            <span class="text-xs text-gray-600">Vendre</span>
+        </a>
+    </div>
+   <div class="flex flex-col items-center">
+        <a href="{% url 'myadds' %}">
+            <i class="fas fa-list text-gray-600"></i>
+            <span class="text-xs text-gray-600">Mes Favoris</span>
+        </a>    
+   </div>
+   <div class="flex flex-col items-center">
+        
+        {% if request.user.email == "chapchapmali@gmail.com" %}
+            <a href="{% url 'dashboard' %}">
+                <i class="fas fa-user text-gray-600"></i>
+                <span class="text-xs text-gray-600">Dashboard</span>
+            </a>
+        {% else %}
+            <a href="{% url 'account' %}">
+                <i class="fas fa-user text-gray-600"></i>
+                <span class="text-xs text-gray-600">Moi</span>
+            </a>
+        {% endif %}
+</div>
+
+  </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                // Store location in sessionStorage
+                sessionStorage.setItem('latitude', lat);
+                sessionStorage.setItem('longitude', lon);
+
+                // Check if location is already in the URL to avoid infinite reload
+                const urlParams = new URLSearchParams(window.location.search);
+                if (!urlParams.has('latitude') || !urlParams.has('longitude')) {
+                    urlParams.set('latitude', lat);
+                    urlParams.set('longitude', lon);
+                    window.location.search = urlParams.toString(); // Reload with new params
+                }
+            }, (error) => {
+                console.error("Geolocation error:", error);
+            });
+        }
+    });
+</script>
+
+
+
+    
+    
+</body>
+</html>

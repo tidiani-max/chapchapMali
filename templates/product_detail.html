@@ -1,0 +1,81 @@
+{% load static %}
+<html>
+<script src="https://cdn.tailwindcss.com">
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
+<!-- Header with Back Button -->
+
+
+<!-- Product Details -->
+<div class="product-detail p-4">
+    <h1 class="text-2xl font-bold">{{ product.name }}</h1>
+    <p class="text-gray-600">{{ product.description }}</p>
+    <p class="text-lg font-semibold mt-2"><strong>Price:</strong> ${{ product.price }}</p>
+
+    <!-- Swiper Container -->
+    <div class="swiper-container mt-4">
+        <div class="swiper-wrapper">
+            <!-- Loop through photos -->
+            {% for photo in product.photos.all %}
+            <div class="swiper-slide">
+                <img src="{{ photo.image.url }}" alt="{{ product.name }} Photo" class="rounded-lg w-full">
+            </div>
+            {% endfor %}
+
+            <!-- Loop through videos -->
+            {% for video in product.videos.all %}
+            <div class="swiper-slide">
+                <video controls class="rounded-lg w-full">
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- Add Navigation -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</div>
+
+<!-- Swiper.js Styles and Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new Swiper('.swiper-container', {
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    });
+</script>
+
+<style>
+    .product-detail {
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .swiper-container {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .swiper-slide img, .swiper-slide video {
+        width: 100%;
+        border-radius: 8px;
+    }
+</style>
+</html>
+
