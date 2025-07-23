@@ -1,30 +1,61 @@
- ChapChap – Fast & Cheap Online Selling Platform
+ChapChap – Fast & Affordable Online Selling Platform
 
- ChapChap is an online platform allowing users to quickly post, buy, and sell products based on proximity, affordability, and user engagement.
+ChapChap is an online marketplace that allows users to buy and sell products efficiently based on proximity, price, and engagement. Designed for speed, affordability, and accessibility, ChapChap makes local selling smarter and easier.
 
- Built With
-- HTML, CSS, JavaScript
-- django allauth (Authentication)
-- posgresql  ( Database)
-- Geolocation (for proximity-based product ranking)
+
+
+Built With
+
+- Django (Python Framework)
+- **HTML/CSS/JavaScript**
+- **Tailwind CSS**
+- **Django Allauth** (Authentication)
+- **PostgreSQL** (Database)
+- **Geolocation APIs** (Proximity-based ranking)
+
 
  Features
-- Sell products with images, categories, and location
-- Prioritize product visibility based on distance
-- Fair ranking algorithm: proximity + engagement + sponsored boost
-- Mobile-friendly design
-Folder Structure
-chapchap-app/
-├── index.html
-├── js/
-├── css/
-├── images/
+
+- 📸 Upload and sell products with images, categories, and location
+- 📍 Proximity-based product ranking for nearby buyers
+- ⚖️ Fair visibility algorithm (distance + engagement + sponsor)
+- 📱 Mobile-responsive layout
+- 🔐 Secure user registration and authentication
+
+
+Project Structure
+
+chapchapMali/
+├── chap_chap/
+├── chapchap/
+├── chat/
+├── media/
+├── node_modules/
+├── static/
+├── staticfiles/
+├── templates/
+├── db.sqlite3
+├── manage.py
+├── package.json
+├── tailwind.config.js
 └── README.md
 
-nginx
+yaml
 Copier
 Modifier
 
+Live Demo
+
+*(Coming soon)*
+
+
 Author
-Cheick Tidiani Diawara – [@tidiani-max](https://github.com/tidiani-max)
+
+Cheick Tidiani Diawara  
+GitHub: [@tidiani-max](https://github.com/tidiani-max)  
+Company: [Diawara Digital & Software](https://github.com/tidiani-max/diawaradigitalsoftware)
+ Contact
+
+ Email: cheicktidianidiawara97@gmail.com  
+
  
