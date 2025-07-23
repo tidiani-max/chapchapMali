@@ -4,7 +4,8 @@ ChapChap is an online platform allowing users to quickly post, buy, and sell pro
 
  Built With
 - HTML, CSS, JavaScript
-- Firebase (Authentication + Database)
+- django allauth (Authentication)
+- posgresql  ( Database)
 - Geolocation (for proximity-based product ranking)
 
  Features
